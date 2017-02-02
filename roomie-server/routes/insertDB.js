@@ -9,9 +9,8 @@ var moment = require('moment');
 
 
 var insertDocument = function(db, data, callback) {
-   db.collection('rooms').insertOne(
+   db.collection(data['roomName']).insertOne(
      {
-       roomName: "exampleA",
        data: [
          {
            timeStamp: moment().format(),
@@ -28,14 +27,9 @@ var insertDocument = function(db, data, callback) {
   });
 };
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-
-});
-
-
-router.post('/insert', function(req, res, next) {
+router.post('/roomdata', function(req, res, next) {
   var data = {
+    "roomName": req.body.room,
     "heat": req.body.heat,
     "noise": req.body.noise,
     "lighting": req.body.light,
@@ -48,8 +42,6 @@ router.post('/insert', function(req, res, next) {
     });
   });
 });
-
-
 
 
 module.exports = router;
