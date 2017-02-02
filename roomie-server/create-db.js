@@ -21,7 +21,7 @@ var insertDocument = function(db, callback) {
        ]
      }, function(err, result) {
     assert.equal(err, null);
-    console.log("Inserted a document into the rooms collection.");
+    console.log("Inserted some data for a room.");
     callback();
   });
 };
