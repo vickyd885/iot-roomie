@@ -9,7 +9,8 @@ var moment = require('moment');
 
 
 var insertDocument = function(db, data, callback) {
-   db.collection(data['roomName']).insertOne(
+   console.log(String(data['roomName']));
+   db.collection( String(data['roomName']) ).insertOne(
      {
        data: [
          {
