@@ -8,7 +8,7 @@ var url = 'mongodb://localhost:27017/roomsdb';
 
 
 var roomInfo = function(db, callback) {
-   var cursor = db.collection('rooms').find( );
+   var cursor = db.collection('roomA').find( );
    var listOfRooms = [];
    cursor.each(function(err, doc) {
       assert.equal(err, null);
