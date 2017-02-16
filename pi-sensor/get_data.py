@@ -1,25 +1,18 @@
 import time
 
-## Import the bluepy library
-from . import *
-from bluepy.bluepy import sensortag
+## Import the bluepy librarylmao 
+from bluepy.bluepy import btle, sensortag
 
 
-tag = sensortag.SensorTag('BC:6A:29:AC:53:D1')
+tag = sensortag.SensorTag('C4:BE:84:72:67:86')
 
-
-### Connect to a tag
-
-### Get data
-
-### Send data to a sever
-
-### Disconnect
 
 time.sleep(1.0)
 tag.IRtemperature.enable()
 for i in range(5):
     tag.waitForNotifications(1.0)
     print tag.IRtemperature.read()
+
+
 tag.disconnect()
 del tag
