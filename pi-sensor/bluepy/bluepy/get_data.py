@@ -6,7 +6,10 @@ import sensortag
 
 ## Define server address!
 
-server = "http://localhost:3000/insertData/roomdata"
+
+## server = "http://127.0.0.1:3000/insertDB/roomdata/"
+
+server = "http://iotucl.cloudapp.net:3000/insertDB/roomdata/"
 
 ## Hold list of sensors!
 sensors_list = []
