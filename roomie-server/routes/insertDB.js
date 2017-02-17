@@ -40,6 +40,7 @@ router.post('/roomdata', function(req, res, next) {
     assert.equal(null, err);
     insertDocument(db, data, function() {
         db.close();
+        res.send("Accepted!");
     });
   });
 });
