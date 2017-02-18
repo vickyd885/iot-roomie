@@ -7,8 +7,8 @@ var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/roomsdb';
 
 
-var roomInfo = function(db, callback) {
-   var cursor = db.collection('roomA').find( );
+var roomInfo = function(db, name, callback) {
+   var cursor = db.collection(name).find( );
    var listOfRooms = [];
    cursor.each(function(err, doc) {
       assert.equal(err, null);
@@ -23,8 +23,15 @@ var roomInfo = function(db, callback) {
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-
+router.get('/roomdata/:name', function(req, res, next) {
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    roomInfo(db, req.params.name, function(data) {
+        console.log("heard request for room: "+req.params.name);
+        db.close();
+        res.send(data);
+    });
+  });
 });
 
 
