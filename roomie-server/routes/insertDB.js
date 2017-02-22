@@ -14,7 +14,7 @@ var insertDocument = function(db, data, callback) {
      {
        data: [
          {
-           timeStamp: moment().format(),
+           timeStamp: new Date(),
            heat: data['heat'],
            noise: data['noise'],
            lighting: data['lighting'],
