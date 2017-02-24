@@ -1,1 +1,4 @@
 /roomie-server/data
+
+# dependencies
+node_modules
