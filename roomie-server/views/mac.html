@@ -2,9 +2,11 @@
 <html>
   <head>
     <title>IoT Roomie</title>
+
   </head>
   <body>
     <h2> Please insert your Mac address </h2>
+    <div class="response" id="responseMsg"></div>
     <form id="macForm" action="handleMac/save" method="POST">
       <input type="text" name="user">
       <input type="text" name="mac">
@@ -20,7 +22,7 @@
 <script>
 $("#macForm").submit(function(e) {
 
-    var url = "handleMac/save"; 
+    var url = "handleMac/save";
 
     $.ajax({
            type: "POST",
@@ -29,6 +31,15 @@ $("#macForm").submit(function(e) {
            success: function(data)
            {
                //alert(data);
+               data = JSON.parse(data);
+               if(data['status'] == 'complete'){
+                 $("#responseMsg").html("Saved!");
+                 $("#responseMsg").css("border-color","green");
+               }else{
+                 $("#responseMsg").html("Woops, something went wrong!");
+                 $("#responseMsg").css("border-color","red");
+
+               }
            }
          });
 
