@@ -10,6 +10,7 @@
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.1",
     "debug": "~2.6.0",
+    "ejs": "^2.5.6",
     "express": "~4.14.1",
     "kerberos": "~0.0.17",
     "mongodb": "~2.2.22",

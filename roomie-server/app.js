@@ -9,6 +9,7 @@ var index = require('./routes/index');
 
 var viewDB = require('./routes/viewDB');
 var insertDB = require('./routes/insertDB');
+var handleMac = require('./routes/handleMac');
 
 var cors = require('cors')
 var app = express();
@@ -28,10 +29,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
+
 app.use('/', index);
 app.use('/viewDB', viewDB);
 app.use('/insertDB', insertDB);
-
+app.use('/handleMac', handleMac);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
