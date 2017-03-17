@@ -31,13 +31,14 @@
     var labels = [];
 
     for(x = 0; x < 4; x++){
-      console.log(data[x]['data'][0]);
       dataSet['heat'].push(data[x]['data'][0]['heat']);
       dataSet['noise'].push(data[x]['data'][0]['noise']);
       dataSet['lighting'].push(data[x]['data'][0]['lighting']);
       dataSet['people'].push(data[x]['data'][0]['people']);
 
-      labels.push(data[x]['data'][0]['timeStamp']);
+      var date = new Date(data[x]['data'][0]['timeStamp']);
+      var time = date.getHours() + ":" + date.getMinutes();
+      labels.push(time);
 
     }
 
@@ -78,7 +79,6 @@
                 data: dataSet['people'],
                 borderColor: '#D81E5B',
                 backgroundColor: '#D81E5B',
-
                 fill: false
             }
           ]
