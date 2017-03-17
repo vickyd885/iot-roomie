@@ -22,17 +22,26 @@
 
   $.get("/viewDB/roomdata/" + "Room 1.05", function(data){
     console.log(data);
-    var heatDataSet = [];
+    var dataSet = {
+      'heat' : [],
+      'noise': [],
+      'lighting': [],
+      'people': []
+    };
     var labels = [];
 
     for(x = 0; x < 4; x++){
       console.log(data[x]['data'][0]);
-      heatDataSet.push(data[x]['data'][0]['heat']);
+      dataSet['heat'].push(data[x]['data'][0]['heat']);
+      dataSet['noise'].push(data[x]['data'][0]['noise']);
+      dataSet['lighting'].push(data[x]['data'][0]['lighting']);
+      dataSet['people'].push(data[x]['data'][0]['people']);
+
       labels.push(data[x]['data'][0]['timeStamp']);
 
     }
 
-    createGraph(heatDataSet,labels);
+    createGraph(dataSet,labels);
 
   });
 
@@ -43,32 +52,42 @@
         data: {
             labels: labels,
             datasets: [{
-                label: 'Heat over time',
-                data: dataSet,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+                label: 'Heat',
+                data: dataSet['heat'],
+                borderColor: '#E59F30',
+                backgroundColor: '#E59F30',
+                fill: false
+            },
+            {
+                label: 'Noise',
+                data: dataSet['noise'],
+                borderColor: '#121c44',
+                backgroundColor: '#121c44',
+
+                fill: false
+            },
+            {
+                label: 'Lighting',
+                data: dataSet['lighting'],
+                borderColor: '#0FA3B1',
+                backgroundColor: '#0FA3B1',
+                fill: false
+            },
+            {
+                label: 'Number of people',
+                data: dataSet['people'],
+                borderColor: '#D81E5B',
+                backgroundColor: '#D81E5B',
+
+                fill: false
+            }
+          ]
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero:true
+                        //beginAtZero:true
                     }
                 }]
             }
