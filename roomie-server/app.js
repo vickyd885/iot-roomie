@@ -9,7 +9,9 @@ var index = require('./routes/index');
 
 var viewDB = require('./routes/viewDB');
 var insertDB = require('./routes/insertDB');
+var insertFakeData = require('./routes/insertFakeData');
 var handleMac = require('./routes/handleMac');
+var dashboard = require('./routes/dashboard');
 
 var cors = require('cors')
 var app = express();
@@ -38,6 +40,10 @@ app.use('/', index);
 app.use('/viewDB', viewDB);
 app.use('/insertDB', insertDB);
 app.use('/handleMac', handleMac);
+app.use('/dashboard', dashboard);
+app.use('/insertFakeData', insertFakeData);
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

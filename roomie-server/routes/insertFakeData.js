@@ -12,7 +12,7 @@ UNITS USED
 - ligh levels: lux
 - noise: db
 
-1 lux = 1 lumen / sq meter = 0.0001 phot = 0.0929 foot candle (ftcd, fcd) 
+1 lux = 1 lumen / sq meter = 0.0001 phot = 0.0929 foot candle (ftcd, fcd)
 1 phot = 1 lumen / sq centimeter = 10000 lumens / sq meter = 10000 lux
 1 foot candle (ftcd, fcd)  = 1 lumen / sq ft = 10.752 lux
 one foot candle = one lumen of light density per square foot
@@ -369,12 +369,12 @@ var insertDocument = function(db, data, callback) {
        ]
      }, function(err, result) {
     assert.equal(err, null);
-    callback(); 
+    callback();
   });
 };
 
 
-router.post('/roomdata', function(req, res, next) {
+router.get('/roomdata', function(req, res, next) {
 
   var arr = fakeData();
   MongoClient.connect(url, function(err, db) {
@@ -384,7 +384,7 @@ router.post('/roomdata', function(req, res, next) {
       console.log(value);
         insertDocument(db, value, function() {
         db.close();
-      }); 
+      });
     });
     res.send("Request sent!");
   });
