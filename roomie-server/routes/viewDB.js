@@ -37,6 +37,23 @@ var roomInfo = function(db, name, time, callback) {
 
 };
 
+var allRoomInfo = function(db, callback) {
+  var cursor;
+
+   cursor = db.listCollections()
+   console.log(cursor);
+   var listOfRooms = [];
+   cursor.each(function(err, doc) {
+      assert.equal(err, null);
+      if (doc != null) {
+         listOfRooms.push(doc);
+      } else {
+         callback(listOfRooms);
+      }
+   });
+
+};
+
 
 /* GET Room data by room name */
 router.get('/roomdata/:name', function(req, res, next) {
@@ -65,11 +82,24 @@ router.get('/timedroomdata', function(req, res, next) {
   });
 });
 
+//get a  list of rooms on db
+
+router.get('/getRoomList', function(req, res, next) {
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    allRoomInfo(db, function(data) {
+        db.close();
+        res.send(data);
+    });
+  });
+});
+
+
 
 router.get('/rooms', function(req, res, next) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
-    roomInfo(db, function(data) {
+    rooomInfo(db, function(data) {
         db.close();
         res.send(data);
     });

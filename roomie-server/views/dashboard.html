@@ -1,0 +1,146 @@
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.js"></script>
+	  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	  <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+	  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link href="/stylesheets/style.css" rel="stylesheet">
+	</head>
+
+
+	<body style="font-family:Karla; text-align:center;">
+		<nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">iot-roomie</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Free rooms</a></li>
+          <li><a href="/dashboard">Room Data</a></li>
+          <li><a href="#">Register yourself</a></li>
+        </ul>
+      </div>
+    </nav>
+		<div class="home-container">
+	     <h1> Dashboard </h1>
+
+	     <p> This page will show you data associated with a room. You can pick a room and get data about it. </p>
+
+			 <div  style="margin-left:8px;" id="roomList" class="row">
+
+			 </div>
+			 <div id="graph-title"> </div>
+		   <canvas style="visibility:hidden; "id="myChart" width="1600" height="700"></canvas>
+	  </div>
+	</body>
+	<script>
+
+	$(document).ready(function(){
+		console.log($('#roomList'));
+		$.get('/viewDB/getRoomList', function(data){
+			console.log(data);
+			for(x = 0; x < data.length; x++){
+				var roomId = data[x]['name'].replace(' ','').replace('.','');
+				var room = "<div id='" + roomId + "'> </div>";
+				$('#roomList').append( room);
+				$('#'+roomId).append('<a class="collection-container room-box col-lg-4 col-md-6 col-sm-12 col-xs-12">' + data[x]['name'] + '</a>');
+				setUpClickHandler(roomId, data[x]['name']);
+			}
+		})
+	});
+
+	function setUpClickHandler(roomId, name){
+		$('#'+roomId).click(function(){
+			loadGraph(name);
+		});
+	}
+
+	function loadGraph(roomName){
+		$.get("/viewDB/roomdata/" + roomName, function(data){
+			$('#graph-title').html( '<h2>' + roomName + '</h2>');
+			console.log(data);
+			var dataSet = {
+				'heat' : [],
+				'noise': [],
+				'lighting': [],
+				'people': []
+			};
+			var labels = [];
+
+			for(x = 0; x < data.length; x++){
+				dataSet['heat'].push(data[x]['data'][0]['heat']);
+				dataSet['noise'].push(data[x]['data'][0]['noise']);
+				dataSet['lighting'].push(data[x]['data'][0]['lighting']);
+				dataSet['people'].push(data[x]['data'][0]['people']);
+
+				var date = new Date(data[x]['data'][0]['timeStamp']);
+				var time = date.getHours() + ":" + date.getMinutes();
+				labels.push(time);
+
+			}
+
+			createGraph(dataSet,labels);
+
+		});
+
+	}
+
+
+
+  function createGraph(dataSet, labels){
+    var ctx = $('#myChart');
+		ctx.css('visibility','visible');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Heat',
+                data: dataSet['heat'],
+                borderColor: '#E59F30',
+                backgroundColor: '#E59F30',
+                fill: false
+            },
+            {
+                label: 'Noise',
+                data: dataSet['noise'],
+                borderColor: '#121c44',
+                backgroundColor: '#121c44',
+
+                fill: false
+            },
+            {
+                label: 'Lighting',
+                data: dataSet['lighting'],
+                borderColor: '#0FA3B1',
+                backgroundColor: '#0FA3B1',
+                fill: false
+            },
+            {
+                label: 'Number of people',
+                data: dataSet['people'],
+                borderColor: '#D81E5B',
+                backgroundColor: '#D81E5B',
+                fill: false
+            }
+          ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        //beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+  }
+
+
+	</script>
+
+
+</html>

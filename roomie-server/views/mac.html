@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IoT Roomie</title>
+
+  </head>
+  <body>
+    <h2> Please insert your Mac address </h2>
+    <div class="response" id="responseMsg"></div>
+    <form id="macForm" action="handleMac/save" method="POST">
+      <input type="text" name="user">
+      <input type="text" name="mac">
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+<script>
+$("#macForm").submit(function(e) {
+
+    var url = "handleMac/save";
+
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#macForm").serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               //alert(data);
+               data = JSON.parse(data);
+               if(data['status'] == 'complete'){
+                 $("#responseMsg").html("Saved!");
+                 $("#responseMsg").css("border-color","green");
+               }else{
+                 $("#responseMsg").html("Woops, something went wrong!");
+                 $("#responseMsg").css("border-color","red");
+
+               }
+           }
+         });
+
+    e.preventDefault();
+});
+
+</script>
