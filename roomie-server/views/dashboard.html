@@ -23,51 +23,75 @@
         </ul>
       </div>
     </nav>
-     <h1> Dashboard </h1>
+		<div class="home-container">
+	     <h1> Dashboard </h1>
 
-     <p> This page will show you data associated with a room. You can pick a room and get data about it. </p>
+	     <p> This page will show you data associated with a room. You can pick a room and get data about it. </p>
 
-		 <div id="roomList" class="row">
+			 <div  style="margin-left:8px;" id="roomList" class="row">
 
-		 </div>
-	   <canvas style="visibility:hidden; "id="myChart" width="1600" height="700"></canvas>
-
+			 </div>
+			 <div id="graph-title"> </div>
+		   <canvas style="visibility:hidden; "id="myChart" width="1600" height="700"></canvas>
+	  </div>
 	</body>
 	<script>
 
 	$(document).ready(function(){
 		console.log($('#roomList'));
+		$.get('/viewDB/getRoomList', function(data){
+			console.log(data);
+			for(x = 0; x < data.length; x++){
+				var roomId = data[x]['name'].replace(' ','').replace('.','');
+				var room = "<div id='" + roomId + "'> </div>";
+				$('#roomList').append( room);
+				$('#'+roomId).append('<a class="collection-container room-box col-lg-4 col-md-6 col-sm-12 col-xs-12">' + data[x]['name'] + '</a>');
+				setUpClickHandler(roomId, data[x]['name']);
+			}
+		})
 	});
 
+	function setUpClickHandler(roomId, name){
+		$('#'+roomId).click(function(){
+			loadGraph(name);
+		});
+	}
 
-  $.get("/viewDB/roomdata/" + "Room 1.05", function(data){
-    console.log(data);
-    var dataSet = {
-      'heat' : [],
-      'noise': [],
-      'lighting': [],
-      'people': []
-    };
-    var labels = [];
+	function loadGraph(roomName){
+		$.get("/viewDB/roomdata/" + roomName, function(data){
+			$('#graph-title').html( '<h2>' + roomName + '</h2>');
+			console.log(data);
+			var dataSet = {
+				'heat' : [],
+				'noise': [],
+				'lighting': [],
+				'people': []
+			};
+			var labels = [];
 
-    for(x = 0; x < 4; x++){
-      dataSet['heat'].push(data[x]['data'][0]['heat']);
-      dataSet['noise'].push(data[x]['data'][0]['noise']);
-      dataSet['lighting'].push(data[x]['data'][0]['lighting']);
-      dataSet['people'].push(data[x]['data'][0]['people']);
+			for(x = 0; x < data.length; x++){
+				dataSet['heat'].push(data[x]['data'][0]['heat']);
+				dataSet['noise'].push(data[x]['data'][0]['noise']);
+				dataSet['lighting'].push(data[x]['data'][0]['lighting']);
+				dataSet['people'].push(data[x]['data'][0]['people']);
 
-      var date = new Date(data[x]['data'][0]['timeStamp']);
-      var time = date.getHours() + ":" + date.getMinutes();
-      labels.push(time);
+				var date = new Date(data[x]['data'][0]['timeStamp']);
+				var time = date.getHours() + ":" + date.getMinutes();
+				labels.push(time);
 
-    }
+			}
 
-    createGraph(dataSet,labels);
+			createGraph(dataSet,labels);
 
-  });
+		});
+
+	}
+
+
 
   function createGraph(dataSet, labels){
-    var ctx = document.getElementById("myChart");
+    var ctx = $('#myChart');
+		ctx.css('visibility','visible');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {

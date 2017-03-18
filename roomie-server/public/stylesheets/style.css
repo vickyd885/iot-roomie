@@ -35,3 +35,7 @@
   text-align: center;ß
   display: block;
 }
+
+.room-box{
+  max-width: 300px;
+}
