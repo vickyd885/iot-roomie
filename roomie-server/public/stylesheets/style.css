@@ -1,8 +1,37 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+
+
+/*Navbar stuff */
+
+.navbar{
+  border: 0px;
+  border-radius: 0px;
+  color: white;
 }
 
-a {
-  color: #00B7FF;
+.navbar-default{
+  background-color: #121c44;
+}
+
+.navbar-default .navbar-nav>li>a{
+  color: white;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+
+.collection-container {
+  border-style: solid;
+  /*padding: 20px;*/
+  margin: 3px;
+  border-color: #121c44;
+
+}
+
+.home-container{
+  margin: 20px;
+  text-align: center;ß
+  display: block;
 }
