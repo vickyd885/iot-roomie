@@ -1,18 +1,43 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <title>IoT Roomie</title>
-
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="/stylesheets/style.css" rel="stylesheet">
   </head>
+
   <body>
-    <h2> Please insert your Mac address </h2>
-    <div class="response" id="responseMsg"></div>
-    <form id="macForm" action="handleMac/save" method="POST">
-      <input type="text" name="user">
-      <input type="text" name="mac">
-      <button type="submit">Submit</button>
-    </form>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">iot-roomie</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Free rooms</a></li>
+          <li><a href="/findPerson">Find Someone</a></li>
+          <li><a href="/dashboard">Room Data</a></li>
+          <li><a href="/registerMac">Register yourself</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="home-container">
+      <div class="row">
+        <h2> Please insert your Mac address </h2>
+        <div class="response" id="responseMsg"></div>
+        <form id="macForm" action="handleMac/save" method="POST">
+          <input type="text" name="user">
+          <input type="text" name="mac">
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+  </div>
   </body>
+</html>
+
+
+
 </html>
 <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
