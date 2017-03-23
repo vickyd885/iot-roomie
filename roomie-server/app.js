@@ -12,6 +12,8 @@ var insertDB = require('./routes/insertDB');
 var insertFakeData = require('./routes/insertFakeData');
 var registerMac = require('./routes/registerMac');
 var dashboard = require('./routes/dashboard');
+var findSomeone = require('./routes/findSomeone');
+
 
 var cors = require('cors')
 var app = express();
@@ -42,6 +44,7 @@ app.use('/insertDB', insertDB);
 app.use('/registerMac', registerMac);
 app.use('/dashboard', dashboard);
 app.use('/insertFakeData', insertFakeData);
+app.use('/findPerson', findSomeone);
 
 
 // catch 404 and forward to error handler
