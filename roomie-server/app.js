@@ -10,8 +10,11 @@ var index = require('./routes/index');
 var viewDB = require('./routes/viewDB');
 var insertDB = require('./routes/insertDB');
 var insertFakeData = require('./routes/insertFakeData');
-var handleMac = require('./routes/handleMac');
+var registerMac = require('./routes/registerMac');
 var dashboard = require('./routes/dashboard');
+var findSomeone = require('./routes/findSomeone');
+var findRoom = require('./routes/findRoom');
+
 
 var cors = require('cors')
 var app = express();
@@ -39,9 +42,11 @@ app.set('view engine', 'html');
 app.use('/', index);
 app.use('/viewDB', viewDB);
 app.use('/insertDB', insertDB);
-app.use('/handleMac', handleMac);
+app.use('/registerMac', registerMac);
 app.use('/dashboard', dashboard);
 app.use('/insertFakeData', insertFakeData);
+app.use('/findPerson', findSomeone);
+app.use('/findRoom', findRoom);
 
 
 // catch 404 and forward to error handler

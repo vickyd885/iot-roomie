@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">iot-roomie</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="/findRoom">Free rooms</a></li>
+          <li><a href="/findPerson">Find Someone</a></li>
+          <li><a href="/dashboard">Room Data</a></li>
+          <li><a href="/registerMac">Register yourself</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="home-container">
+      <div class="row">
+        <h1> Find Someone </h1>
+        <p> Simply enter their email and find which room they are were last seen at! </p>
+        <input placeholder="Email" class="form-control search-bar" type="text" id="searchTerm"><br>
+        <button class="btn btn-primary" id="search-button"> Find </button>
+        <div id="results" style="display:none;">
+          <h3> This person was last seen at: </h3>
+          <div id="location"> </div>
+        </div>
+        <div id="error" style="display:none;">
+          <h4> This person does not exist! </h4>
+        </div>
+      </div>
+
+  </div>
+</body>
+<script>
+
+  var fakeResults = {
+    'zcabvdi@ucl.ac.uk' : 'Room 1.05',
+    'zcabfah@ucl.ac.uk' : 'Room 1.01'
+  }
+
+  $('#search-button').click(function(){
+    $('#error').hide();
+    $('#results').hide();
+    var name = $('#searchTerm').val();
+    console.log(name);
+    var locationResult = fakeResults[name];
+    if(locationResult){
+      $('#results').show();
+      $('#location').html('<h2> ' + locationResult + '</h2>');
+    }else{
+      $('#error').show();
+    }
+  });
+</script>
+</html>
