@@ -39,3 +39,9 @@
 .room-box{
   max-width: 300px;
 }
+
+.search-bar{
+  width: 300px;
+  display: -webkit-inline-box;
+  margin-bottom: 10px;
+}

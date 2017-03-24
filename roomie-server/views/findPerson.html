@@ -24,8 +24,40 @@
     </nav>
     <div class="home-container">
       <div class="row">
-        
+        <h1> Find Someone </h1>
+        <p> Simply enter their email and find which room they are were last seen at! </p>
+        <input placeholder="Email" class="form-control search-bar" type="text" id="searchTerm"><br>
+        <button class="btn btn-primary" id="search-button"> Find </button>
+        <div id="results" style="display:none;">
+          <h3> This person was last seen at: </h3>
+          <div id="location"> </div>
+        </div>
+        <div id="error" style="display:none;">
+          <h4> This person does not exist! </h4>
+        </div>
       </div>
+
   </div>
-  </body>
+</body>
+<script>
+
+  var fakeResults = {
+    'zcabvdi@ucl.ac.uk' : 'Room 1.05',
+    'zcabfah@ucl.ac.uk' : 'Room 1.01'
+  }
+
+  $('#search-button').click(function(){
+    $('#error').hide();
+    $('#results').hide();
+    var name = $('#searchTerm').val();
+    console.log(name);
+    var locationResult = fakeResults[name];
+    if(locationResult){
+      $('#results').show();
+      $('#location').html('<h2> ' + locationResult + '</h2>');
+    }else{
+      $('#error').show();
+    }
+  });
+</script>
 </html>
