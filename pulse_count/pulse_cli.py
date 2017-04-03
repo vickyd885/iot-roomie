@@ -44,6 +44,8 @@ def sendPicture(wd, cameraTime):
         cameraTime = 5
     while 1:
         total = []
+        with open(wd+'/peopleCountRaw.text', 'a') as f:
+                f.write("Data stream starting at "+str(datetime.datetime.now())+"\n\n")
         for i in range(0,(cameraTime*60)/3):
             smile(wd)
             base64_image = base64.b64encode(open(wd+'/image.jpg').read())
@@ -52,6 +54,8 @@ def sendPicture(wd, cameraTime):
                        "X-Access-Token": "Se1cbirNqW0qNRKHIFvfVVUSVdeIqf0mdGUR"}
             r = requests.post("https://dev.sighthoundapi.com/v1/detections?type=person",data=params, headers=headers)
             personCount = r.content.count('person')
+            with open(wd+'/peopleCountRaw.text', 'a') as f:
+                f.write(str(datetime.datetime.now()) + " : " + str(personCount)+"\n")
         filtered_total = reject_outliers(total)
         averagePersonCount = sum(i for i in filtered_total)/float((cameraTime*60)/3)
         peopleCountResults.update({str(datetime.datetime.now()):averagePersonCount})       
@@ -364,31 +368,35 @@ def menu(monitorMac, uploadTime, blacklistPercent, cameraTime, wd):
             print e
             print "\nUse 'exit' to shutdown program or 'help' or '-h' or '?' to see options."
 
-wd = os.path.dirname(os.path.realpath(__file__))
-monitorMac, uploadTime, blacklistPercent, cameraTime = readVariables(wd)
-warnings.filterwarnings("ignore")
-print '''
-____________________________________________________                                                
- __________________________________________________ 
+try:
+    wd = os.path.dirname(os.path.realpath(__file__))
+    monitorMac, uploadTime, blacklistPercent, cameraTime = readVariables(wd)
+    warnings.filterwarnings("ignore")
+    print '''
+    ____________________________________________________                                                
+     __________________________________________________ 
 
-  /$$$$$$$  /$$   /$$ /$$        /$$$$$$  /$$$$$$$$
- | $$__  $$| $$  | $$| $$       /$$__  $$| $$_____/
- | $$  \ $$| $$  | $$| $$      | $$  \__/| $$      
- | $$$$$$$/| $$  | $$| $$      |  $$$$$$ | $$$$$   
- | $$____/ | $$  | $$| $$       \____  $$| $$__/   
- | $$      | $$  | $$| $$       /$$  \ $$| $$      
- | $$      |  $$$$$$/| $$$$$$$$|  $$$$$$/| $$$$$$$$
- |__/       \______/ |________/ \______/ |________/
+      /$$$$$$$  /$$   /$$ /$$        /$$$$$$  /$$$$$$$$
+     | $$__  $$| $$  | $$| $$       /$$__  $$| $$_____/
+     | $$  \ $$| $$  | $$| $$      | $$  \__/| $$      
+     | $$$$$$$/| $$  | $$| $$      |  $$$$$$ | $$$$$   
+     | $$____/ | $$  | $$| $$       \____  $$| $$__/   
+     | $$      | $$  | $$| $$       /$$  \ $$| $$      
+     | $$      |  $$$$$$/| $$$$$$$$|  $$$$$$/| $$$$$$$$
+     |__/       \______/ |________/ \______/ |________/
 
- __________________________________________________                                                
-____________________________________________________
+     __________________________________________________                                                
+    ____________________________________________________
 
-Welcome  to the Pulse CLI:
-Use \'help\' to see options.
-                                                  
-'''
-while True:
-    menu(monitorMac, uploadTime, blacklistPercent,cameraTime, wd)
+    Welcome  to the Pulse CLI:
+    Use \'help\' to see options.
+                                                      
+    '''
+    while True:
+        menu(monitorMac, uploadTime, blacklistPercent,cameraTime, wd)
+except Exception as e:
+    print e
+    
 
 
 
