@@ -1,0 +1,4 @@
+monitorMac=00:c0:ca:92:08:6f
+uploadTime=None
+blacklistPercent=None
+cameraTime=None
