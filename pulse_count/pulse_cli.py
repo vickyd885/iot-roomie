@@ -54,6 +54,7 @@ def sendPicture(wd, cameraTime):
                        "X-Access-Token": "Se1cbirNqW0qNRKHIFvfVVUSVdeIqf0mdGUR"}
             r = requests.post("https://dev.sighthoundapi.com/v1/detections?type=person",data=params, headers=headers)
             personCount = r.content.count('person')
+            total.append(personCount)
             with open(wd+'/peopleCountRaw.text', 'a') as f:
                 f.write(str(datetime.datetime.now()) + " : " + str(personCount)+"\n")
         filtered_total = reject_outliers(total)
@@ -331,14 +332,17 @@ def menu(monitorMac, uploadTime, blacklistPercent, cameraTime, wd):
                     printBlacklistPercent = blacklistPercent
                 print "Collecting Data and uploading data every %s minutes. Blacklist Percent Threshold set to %s%%"%(printUploadTime,printBlacklistPercent)
             elif command[0] == "peoplecount":
-                if cameraTime == None:
-                    printCameraTime = 5
-                else:
-                    printCameraTime = cameraTime
-                print "People Count Initiated in background.\nUploading data every %s minutes."%printCameraTime 
-                thread = threading.Thread(target = sendPicture, args = (wd,None))
-                thread.daemon = True
-                thread.start()
+                try:
+                    if cameraTime == None:
+                        printCameraTime = 5
+                    else:
+                        printCameraTime = cameraTime 
+                    thread = threading.Thread(target = sendPicture, args = (wd,None))
+                    thread.daemon = True
+                    thread.start()
+                    print "People Count Initiated in background.\nUploading data every %s minutes."%printCameraTime
+                except Exception as e:
+                    print "Error: " + e
             # Set Variable Values            
             elif command[0] == "set":
                 if command[1] == "monitormac" or command[1] == "uploadtime" or command[1] == "blacklistpercent" or command[1] == "cameratime":
