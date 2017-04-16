@@ -293,11 +293,17 @@ var roomInfo = function(db, name, time, callback) {
 These are of course just the basic, you can add much more functionality by building of the tutorials we used here, as we have done for our project. If you want more information, feel free to use these refernces:
 
 [NodeJs](https://nodejs.org/en/)
+
 [Express](https://expressjs.com/) 
+
 [Restful APIs](https://en.wikipedia.org/wiki/Representational_state_transfer)
+
 [MongoDB](https://docs.mongodb.com/manual/installation/)
+
 [Sensor Tag Data](http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#IR_Temperature_Sensor)
+
 [Setting Up NodeJs and Express Server](http://cwbuecheler.com/web/tutorials/2013/node-express-mongo/)
+
 [Bluepy library](http://ianharvey.github.io/bluepy-doc/) - github library provided by [IanHarvey](https://github.com/IanHarvey/bluepy)
 
 
