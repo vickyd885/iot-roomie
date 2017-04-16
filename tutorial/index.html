@@ -1,0 +1,301 @@
+<head>
+  <link href="md.css" rel="stylesheet">
+</head>
+<body>
+  <style>
+  	.markdown-body {
+  		box-sizing: border-box;
+  		min-width: 200px;
+  		max-width: 980px;
+  		margin: 0 auto;
+  		padding: 45px;
+  	}
+  </style>
+  <article class="markdown-body">
+    <h1 id="documentationandtutorial">Documentation and Tutorial</h1>
+
+    <p>This documentation contains two tutorials that are based off the application, Pulse, that we built as part of the Internet of Things module. First, we will <strong>walk through building a NodeJs application</strong> as well as <strong>interfacing a Pi with a SensorTag.</strong> These tutorials assume that you have some working knowledge with programming languages, websites and electronics.</p>
+
+    <h2 id="interfacingasensortagonaraspberrypi">Interfacing a SensorTag on a Raspberry Pi</h2>
+
+    <p>Ensure you have a Raspberry Pi with an operating system reading and working. <em>Python</em> comes preinstalled and ready to go on the Raspberry Pi.
+    If you need to install an OS, instructions can be found <a href="https://www.raspberrypi.org/documentation/installation/noobs.md">here</a>.</p>
+
+    <p>We will be interfacing the SensorTag using the <a href="https://github.com/IanHarvey/bluepy">bluepy</a> library over <em>bluetooth</em>.</p>
+
+    <p>The code needs an executable bluepy-helper to be compiled from C source. This is done automatically if you use the recommended pip installation method (see below). Otherwise, you can rebuild it using the Makefile in the bluepy directory.</p>
+
+    <p>To set up the library on the Pi, open <em>terminal</em> and run:</p>
+
+    <pre><code class="shell language-shell">$ sudo apt-get install python-pip libglib2.0-dev
+    $ sudo pip install bluepy
+    </code></pre>
+
+    <h3 id="findingsensortags">Finding Sensor Tags</h3>
+
+    <p>Turn on your sensor tag and restart the bluetooth service</p>
+
+    <pre><code>sudo service bluetooth restart
+    </code></pre>
+
+    <p>Scan for bluetooth devices</p>
+
+    <pre><code>sudo hcitool lescan
+
+    BC:6A:29:AC:53:D1 SensorTag
+    </code></pre>
+
+    <p>This is the <em>Mac address</em> of the SensorTag near by, remember to record as you'll need it.</p>
+
+    <h3 id="abasicscript">A basic script</h3>
+
+    <p>Once that's setup, <code>cd</code> into the folder <code>bluepy/bluepy</code></p>
+
+    <p>Create a file <code>get_data.py</code> in <code>bluepy/bluepy</code></p>
+
+    <pre><code class="python language-python">import time
+    import sensortag
+
+    tag = sensortag.SensorTag('BC:6A:29:AC:53:D1') # Your mac address goes here
+
+    time.sleep(1.0)
+    tag.IRtemperature.enable() # Enable the temp sensor
+    for i in range(5):
+      tag.waitForNotifications(1.0) # Sleep for a bit
+      print tag.IRtemperature.read()
+    tag.disconnect()
+    del tag
+    </code></pre>
+
+    <p>You can run this by <code>python get_data.py</code></p>
+
+    <h3 id="readingsensortagdata">Reading Sensor Tag Data</h3>
+
+    <p>The sensor tag provides the following information that can be captured:</p>
+
+    <ul>
+    <li>IR Temperature, both object and ambient temperature</li>
+
+    <li>Accelerometer, 3 axis</li>
+
+    <li>Humidity, both relative humidity and temperature</li>
+
+    <li>Magnetometer, 3 axis</li>
+
+    <li>Barometer, both pressure and temperature</li>
+
+    <li>Gyroscope, 3 axis</li>
+    </ul>
+
+    <h3 id="amoreadvancedscript">A more advanced script</h3>
+
+    <pre><code class="python language-python">import time
+    import requests # remember to pip install this!
+
+    ## Import the bluepy library
+    import sensortag
+
+    ## Define server address!
+    server = "http://iotucl.cloudapp.net:3000/insertDB/roomdata/" ## This address accesses our database.
+
+    ## Hold list of sensors!
+    sensors_list = []
+
+    sensors_list.append(sensortag.SensorTag('C4:BE:84:72:67:86'))
+
+    def enable_all_sensors(sensor_tag):
+        sensor_tag.IRtemperature.enable()
+        sensor_tag.humidity.enable()
+        sensor_tag.lightmeter.enable()
+
+    def disconnect_from_all_sensors(sensor_tag):
+        sensor_tag.disconnect()
+
+
+    def poll_sensor_tag(sensor_tag):
+        for i in range(5):
+            sensor_tag.waitForNotifications(1.0)
+            temp = sensor_tag.IRtemperature.read()
+            humidity = sensor_tag.humidity.read()
+            light = sensor_tag.lightmeter.read()
+            print "got data:  ", temp, " ", humidity," ", light
+            ppl_count = 1
+            noise  = 0
+            name = "vickys"
+
+            send_data_via_post(temp, humidity,light, name, ppl_count, noise)
+
+    def send_data_via_post(temp, humidity, light, name, ppl_count, noise):
+        payload = { 'temp':temp, 'light': light, 'room': name, 'people': ppl_count}
+        r = requests.post(server, data=payload)
+
+    def run(): # Main Function
+        ## enable Sensors
+        for sensor_tag in sensors_list:
+            enable_all_sensors(sensor_tag)
+
+        print "Finished enabling all sensors"
+
+        ## sleep for a bit to allow for sensors to be initiatlised
+        time.sleep(1.0)
+
+        for sensor_tag in sensors_list:
+            poll_sensor_tag(sensor_tag)
+
+        for sensor_tag in sensors_list:
+            disconnect_from_all_sensors(sensor_tag)
+
+    run()
+    </code></pre>
+
+    <p>This is an example of what you can do by reading the documentation and connecting multiple sensor tags. Here we are not only getting data from the sensor tag, we are posting to a server which is saving these into a database. This is explained in the next bit.</p>
+
+    <h2 id="buildingawebappwithnodejs">Building a webapp with NodeJs</h2>
+
+    <p>Let's a build a <a href="https://nodejs.org/en/">NodeJS</a> app that takes data from our earlier script when it's running on a server and inserts it into a <a href="http://nosql-database.org/">NoSQL</a> database.</p>
+
+    <h3 id="setup">Setup</h3>
+
+    <p>To start creating the application, first make sure to have <a href="https://nodejs.org/en/download/">node installed</a> and then install the Express framework globally using NPM so that it can be used to create a web application using node terminal.</p>
+
+    <pre><code>$ npm install express --save
+    </code></pre>
+
+    <p>To create the project folder, run the following command which is is going to auto-generate a website skeleton in a new directory called roomie-server</p>
+
+    <pre><code>express roomie-server
+    </code></pre>
+
+    <p>And install the dependencies by running:</p>
+
+    <pre><code>npm install
+    </code></pre>
+
+    <p>Create a directory called data that will store all the database files:</p>
+
+    <pre><code>mkdir data
+    </code></pre>
+
+    <p>Open your project folder in an editor and check the bin/www file which starts the server and listens on port 3000 for connection. The port can be changed if it’s already in use by another process:</p>
+
+    <pre><code class="js language-js">var app = require('../app');
+    var debug = require('debug')('roomie-server:server');
+    var http = require('http');
+
+    var port = normalizePort(process.env.PORT || '3000');
+    app.set('port', port);
+
+    var server = http.createServer(app);
+
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+    </code></pre>
+
+    <p>For a more detailed tutorial, follow this <a href="http://cwbuecheler.com/web/tutorials/2013/node-express-mongo/">link</a></p>
+
+    <h3 id="insertingdata">Inserting Data</h3>
+
+    <p>Now we will start building a result. Express application uses a callback function whose parameters are request and response objects. A request object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on. A response object represents the HTTP response that an Express app sends when it gets an HTTP request.</p>
+
+    <pre><code class="js language-js">app.get('/', function (req, res) {
+       // --
+    })
+    </code></pre>
+
+    <p>To insert new data into MongoDB, we need to have a look at how basic routing works. Routing refers to determining how an application responds to a client request to a particular endpoint, which is a URI (or path) and a specific HTTP request method (GET, POST, and so on).</p>
+
+    <pre><code class="js language-js">router.post('/roomdata', function(req, res, next) {
+      var data = {
+        "roomName": req.body.room,
+        "heat": req.body.heat,
+        "noise": req.body.noise,
+        "lighting": req.body.light,
+        "peopleCount": req.body.people
+      }
+      MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        insertDocument(db, data, function() {
+            db.close();
+            res.send("Accepted!");
+        });
+      });
+    });
+    </code></pre>
+
+    <p>Where the url variable holds the connection to the database, specifying the port and database name:</p>
+
+    <p><code>var url = 'mongodb://localhost:27017/roomsdb';</code>
+    `
+    The insertDocument method will insert the values as a new record to an existing MongoDB collection (reminder: each room is represented by a collection) or will create a new one if it doesn’t exist one with the specified name (if the room doesn’t exist yet in the database):</p>
+
+    <pre><code class="js language-js">var insertDocument = function(db, data, callback) {
+       console.log(String(data['roomName']));
+       db.collection( String(data['roomName']) ).insertOne(
+         {
+           data: [
+             {
+               timeStamp: new Date(),
+               heat: data['heat'],
+               noise: data['noise'],
+               lighting: data['lighting'],
+               peopleCount: data['peopleCount']
+             }
+           ]
+         }, function(err, result) {
+        assert.equal(err, null);
+        console.log("Inserted data for the room.");
+        callback();
+      });
+    };
+    </code></pre>
+
+    <p>The new <code>Date()</code> method has been used to get the current time when the data is saved.</p>
+
+    <h3 id="retrieving"> Retrieving</h3>
+
+    <p>Get all the rooms’data
+    Each of the methods provided above will be implemented as an express request as follows:</p>
+
+    <pre><code class="js language-js">router.get('/roomdata/:name', function(req, res, next) {
+      MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        roomInfo(db, req.params.name, null, function(data) {
+            console.log("heard request for room: "+req.params.name);
+            db.close();
+            res.send(data);
+        });
+      });
+    });
+    </code></pre>
+
+    <p>The main function here is <code>roomInfo()</code> which queries the MongoDb like this: You can build your own handlers</p>
+
+    <pre><code class="js language-js">var roomInfo = function(db, name, time, callback) {
+      var cursor;
+
+      var today = moment();
+      if(time == "month"){
+        cursor = db.collection(name ).find({
+          "created_at": { $gte: new Date( today.subtract(1, "months").toString() )}});
+
+       }else if(time == "day"){
+         cursor = db.collection(name ).find({
+           "created_at": { $gte: new Date( today.subtract(1, "day").toString() )}});
+       } else{
+         cursor = db.collection(name).find( );
+       }
+       var listOfRooms = [];
+       cursor.each(function(err, doc) {
+          assert.equal(err, null);
+          if (doc != null) {
+             listOfRooms.push(doc);
+          } else {
+             callback(listOfRooms);
+          }
+       });
+
+    };
+    </code></pre>
+  </article>
+</body>
