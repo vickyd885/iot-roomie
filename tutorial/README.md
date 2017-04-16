@@ -289,3 +289,5 @@ var roomInfo = function(db, name, time, callback) {
 
 };
 ```
+
+These are of course just the basic, you can add much more functionality by building of the tutorials we used here, as we have done for our project. 
