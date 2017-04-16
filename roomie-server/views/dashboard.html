@@ -13,11 +13,11 @@
 		<nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">iot-roomie</a>
+          <a class="navbar-brand" href="../">iot-roomie</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Free rooms</a></li>
+          <li class="active"><a href="../">Home</a></li>
+          <li><a href="/findRoom">Free rooms</a></li>
 					<li><a href="/findPerson">Find Someone</a></li>
           <li><a href="/dashboard">Room Data</a></li>
           <li><a href="/registerMac"  >Register yourself</a></li>
@@ -74,7 +74,7 @@
 				dataSet['heat'].push(data[x]['data'][0]['heat']);
 				dataSet['noise'].push(data[x]['data'][0]['noise']);
 				dataSet['lighting'].push(data[x]['data'][0]['lighting']);
-				dataSet['people'].push(data[x]['data'][0]['people']);
+				dataSet['people'].push(data[x]['data'][0]['peopleCount']);
 
 				var date = new Date(data[x]['data'][0]['timeStamp']);
 				var time = date.getHours() + ":" + date.getMinutes();
