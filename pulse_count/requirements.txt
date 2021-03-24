@@ -32,7 +32,7 @@ pyserial==2.6
 python-apt==0.9.3.12
 requests==2.4.3
 RPi.GPIO==0.6.3
-rsa==3.4.2
+rsa==4.1
 RTIMULib==7.2.1
 sense-emu==1.0
 sense-hat==2.2.0
