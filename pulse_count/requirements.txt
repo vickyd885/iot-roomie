@@ -42,5 +42,5 @@ spidev==3.0
 tabulate==0.7.7
 twython==3.1.2
 uritemplate==3.0.0
-urllib3==1.9.1
+urllib3==1.26.5
 Werkzeug==0.9.6
